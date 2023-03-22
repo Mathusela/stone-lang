@@ -6,6 +6,8 @@
 
 namespace stone_lang {
 
+class Expression;
+
 enum TokenReturnType {
 	
 };
@@ -20,13 +22,21 @@ private:
 	std::string m_text;
 	Token* m_prevToken;
 	Token* m_nextToken;
+	std::function<TokenReturn(Token*)> m_eval;
+
+	Expression* m_expression;
 	
 public:
-	std::function<TokenReturn()> eval;
 	TokenReturn chain();
+	TokenReturn eval() {return m_eval(this);}
 
-	Token(std::string text, std::function<TokenReturn()> eval_function): m_text(text), eval(eval_function) {};
+	std::string get_text();
+	Expression* get_expression();
+
+	Token(std::string text, std::function<TokenReturn(Token*)> eval_function, Expression* expression): m_text(text), m_eval(eval_function), m_expression(expression) {};
 };
+
+Token create_token(std::string tokenString, Expression* expression);
 
 } // namespace stone_lang
 
