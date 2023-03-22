@@ -8,6 +8,10 @@
 
 #include <iostream>
 
+#include "headers/expression.hpp"
+
+namespace stone_lang {
+
 std::string read_file(std::string filePath) {
 	std::ifstream fs(filePath);
 
@@ -26,6 +30,31 @@ std::string filter_by_line(std::string inputText, std::function<bool(std::string
 	std::string text;
 	std::string line;
 	while (std::getline(ss, line)) if (func(line)) {text.append(line + "\n");}
+
+	return text;
+}
+
+int max(int x, int y) {
+	return x > y ? x : y;
+}
+
+std::string filter_line_after_substring(std::string inputText, std::string s) {
+	std::istringstream ss(inputText);
+
+	std::string text;
+	std::string line;
+	std::string lineOut = "";
+	while (std::getline(ss, line)) {
+		lineOut = "";
+		bool stop = false;
+		// std::cout << line.size() << " " << s.size();
+		for (int i=0; i<((int)line.size()-(int)s.size()); i++) {
+			if (line.substr(i, s.size()) == s) stop = true;
+			if (!stop) lineOut += line[i];
+		}
+		if (!stop) for (int i=max(0, (int)line.size()-(int)s.size()); i<line.size(); i++) lineOut += line[i];
+		text += lineOut + "\n";
+	}
 
 	return text;
 }
@@ -54,7 +83,7 @@ std::string remove_whitespace(std::string inputText) {
 }
 
 std::string remove_comments(std::string inputText) {
-	return filter_by_line(inputText, [](std::string line){return line.substr(0, 2) != "//";});
+	return filter_line_after_substring(inputText, "//");
 }
 
 std::string remove_newlines(std::string inputText) {
@@ -62,7 +91,7 @@ std::string remove_newlines(std::string inputText) {
 }
 
 std::string escape_reserved_chars(std::string inputText) {
-	return replace_by_char(replace_by_char(inputText, '\\', "\\\\"), '$', "\\$");
+	return replace_by_char(replace_by_char(replace_by_char(inputText, '\\', "\\\\"), '$', "\\$"), '%', "\\%");
 }
 
 std::string initial_format_code(std::string inputText) {
@@ -159,5 +188,8 @@ void parse_text(std::string inputText) {
 void test_func() {
 	std::string fileText = read_file("../../test-code/test.st");
 	
+	// stone_lang::Expression {};
 	parse_text(fileText);
 }
+
+} // namespace stone_lang

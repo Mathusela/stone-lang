@@ -3,7 +3,7 @@ int add(int x, int y) {
 	return x + y;
 }
 
-int globalVar;
+int globalVar;	// Some variable
 
 // Main entry point
 none main() {
@@ -12,4 +12,8 @@ none main() {
 	scope nestedScope {
 		int nestedScope = 0;
 	}
+}
+
+int func(int a) {
+	int a%variable = 10;
 }

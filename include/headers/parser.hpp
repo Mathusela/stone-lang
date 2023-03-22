@@ -3,9 +3,12 @@
 
 #include <string>
 
+namespace stone_lang {
+
 std::string read_file(std::string filePath);
-std::string initial_format_code(std::string inputText);
 
 void test_func();
+
+} // namespace stone_lang
 
 #endif
