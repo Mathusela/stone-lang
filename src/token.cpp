@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "headers/expression.hpp"
+#include "headers/parser.hpp"
 
 namespace stone_lang {
 
@@ -16,7 +17,7 @@ bool or_many(T X, T y) {
 }
 
 bool is_type(std::string tokenString) {
-	return or_many<std::string>(tokenString, "int", "float", "bool", "none");
+	return or_many<std::string>(tokenString, "int", "float", "bool", "none", "string");
 }
 
 bool is_operator(std::string tokenString) {
@@ -29,6 +30,10 @@ bool is_scope(std::string tokenString) {
 
 bool is_expression(std::string tokenString) {
 	return tokenString[0] == '%';
+}
+
+bool is_literal(std::string tokenString) {
+	return is_regex_match(tokenString, "(?:(?<![$%])\\d+(?:.\\d+)?(?![$%]))|True|False|None|(?:\"[^\"]*\")");
 }
 
 TokenReturn type_eval(Token* token) {
@@ -47,7 +52,7 @@ TokenReturn scope_eval(Token* token) {
 }
 
 TokenReturn expression_eval(Token* token) {
-	std::cout << "EXPRESSION " << (token->get_expression()->get_subexpressions()[ (int)(token->get_text()[1] - '0') ]).get_text();
+	std::cout << "EXPRESSION: " << (token->get_expression()->get_subexpressions()[ (int)(token->get_text()[1] - '0') ]).get_text();
 	return TokenReturn {};
 }
 
@@ -58,6 +63,11 @@ TokenReturn operator_eval(Token* token) {
 
 TokenReturn keyword_eval(Token* token) {
 	std::cout << "KEYWORD";
+	return TokenReturn {};
+}
+
+TokenReturn literal_eval(Token* token) {
+	std::cout << "LITERAL: " << (token->get_text());
 	return TokenReturn {};
 }
 
@@ -73,6 +83,8 @@ Token create_token(std::string tokenString, Expression* expression) {
 		evalFunc = expression_eval;
 	} else if (is_operator(tokenString)) {
 		evalFunc = operator_eval;
+	} else if (is_literal(tokenString)) {
+		evalFunc = literal_eval;
 	} else {
 		evalFunc = name_eval;
 	}

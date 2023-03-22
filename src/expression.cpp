@@ -25,7 +25,9 @@ std::string compress_spaces(std::string inputText) {
 
 std::vector<std::string> split_tokens(std::string inputText, std::string operators) {
 	std::vector<std::string> out;
-	auto matches = get_all_regex_matches(inputText, "(?:[^ \\t"+operators+"]+)|["+operators+"]");
+	// auto matches = get_all_regex_matches(inputText, "(?:[^ \\t"+operators+"]+)|["+operators+"]");
+	auto matches = get_all_regex_matches(inputText, "(\")?(?(1)[^\"]+\"|[^ \t"+operators+"]+)|["+operators+"]");
+	
 	for (auto match : matches) out.push_back(match[0]);
 	return out;
 }
@@ -37,7 +39,7 @@ void Expression::init() {
 
 	for (auto subexpression : subexpressions) m_subexpressions.push_back(Expression(subexpression));
 
-	auto tokens = split_tokens(m_text, "=+-/*");
+	auto tokens = split_tokens(m_text, "=+\\-\\/*");
 	for (auto token : tokens) m_tokens.push_back(create_token(token, this));
 
 	// std::cout << m_subexpressions.size();

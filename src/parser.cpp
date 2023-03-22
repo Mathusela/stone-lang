@@ -82,6 +82,11 @@ std::vector<std::vector<std::string>> get_all_regex_matches(std::string inputTex
 	return out;
 }
 
+bool is_regex_match(std::string inputText, std::string regexExpression) {
+	boost::regex r (regexExpression);
+	return boost::regex_match(inputText, r);
+}
+
 std::string replace_regex(std::string inputText, std::string regexExpression, std::function<std::string()> replace) {
 	boost::regex r (regexExpression);
 	while (boost::regex_search(inputText, r))

@@ -14,6 +14,7 @@ std::string replace_by_char(std::string inputText, char c, std::string r);
 std::vector<std::vector<std::string>> get_all_regex_matches(std::string inputText, std::string regexExpression);
 std::string replace_regex(std::string inputText, std::string regexExpression, std::function<std::string()> replace);
 std::string replace_regex(std::string inputText, std::string regexExpression, std::string replace);
+bool is_regex_match(std::string inputText, std::string regexExpression);
 
 void test_func();
 

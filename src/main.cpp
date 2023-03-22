@@ -2,6 +2,8 @@
 
 #include "headers/parser.hpp"
 
+// TODO: ADD SCOPES
+
 int main() {
 	stone_lang::test_func();
 	// std::string fileText = read_file("../../test-code/test.st");
