@@ -15,6 +15,7 @@ std::vector<std::vector<std::string>> get_all_regex_matches(std::string inputTex
 std::string replace_regex(std::string inputText, std::string regexExpression, std::function<std::string()> replace);
 std::string replace_regex(std::string inputText, std::string regexExpression, std::string replace);
 bool is_regex_match(std::string inputText, std::string regexExpression);
+std::vector<std::string> get_expressions(std::string inputText);
 
 void test_func();
 

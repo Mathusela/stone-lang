@@ -7,6 +7,7 @@
 #include <iostream>
 
 #include "headers/expression.hpp"
+#include "headers/scope.hpp"
 
 namespace stone_lang {
 
@@ -118,21 +119,6 @@ std::string initial_format_code(std::string inputText) {
 	return escape_reserved_chars(remove_newlines(remove_comments(remove_whitespace(inputText))));
 }
 
-
-
-std::vector<std::string> get_scopes(std::string inputText) {
-	std::vector<std::string> out {};
-
-	auto matches = get_all_regex_matches(inputText, "{((?:(?R)|[^{}])*)}");
-	for (auto match : matches) out.push_back(match[1]);
-
-	return out;
-}
-
-std::string tokenize_scopes(std::string inputText) {
-	return replace_regex(inputText, "{((?:(?R)|[^{}])*)}", [](){static int count=0; return " \\$"+std::to_string(count++)+"\\$;";} );
-}
-
 std::vector<std::string> get_expressions(std::string inputText) {
 	std::vector<std::string> out;
 
@@ -148,20 +134,16 @@ std::vector<std::string> get_expressions(std::string inputText) {
 	return out;
 }
 
+// Make new parse_text function, make this function create_program
 void parse_text(std::string inputText) {
 	auto formattedText = initial_format_code(inputText);
-	auto scopes = get_scopes(formattedText);
-	auto scopeTokensText = tokenize_scopes(formattedText);
-	auto expressionsText = get_expressions(scopeTokensText);
 
-	// std::cout << inputText << "\n\n";
-	// std::cout << scopeTokensText << "\n\n";
-	std::vector<Expression> expressions {};
-	for (auto expression : expressionsText) expressions.push_back(Expression(expression));
+	Scope global(formattedText);
+	global.eval();
 }
 
 void test_func() {
-	std::string fileText = read_file("../../test-code/test.st");
+	std::string fileText = read_file("../../test-code/simple.st");
 	parse_text(fileText);
 }
 

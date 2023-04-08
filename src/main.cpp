@@ -2,7 +2,8 @@
 
 #include "headers/parser.hpp"
 
-// TODO: ADD SCOPES
+// TODO: Destroy scopes when they exit
+// TODO: Allow for different types in binary operators
 
 int main() {
 	stone_lang::test_func();
