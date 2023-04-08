@@ -26,7 +26,7 @@ void Scope::init() {
 	m_text = tokenize_scopes(m_text);
 	for (auto subscope : subscopes) m_subscopes.push_back(new Scope(subscope));
 	
-	auto expressionsText = get_expressions(m_text);
+	auto expressionsText = get_expressions_from_text(m_text);
 	for (auto expression : expressionsText) m_expressions.push_back(new Expression(expression, this));
 }
 
@@ -50,7 +50,7 @@ Generic* Scope::get_var(std::string name) {
 	}
 }
 
-void Scope::initialize_var(std::string name, GenericType type) {
+void Scope::initialize_var(std::string name, InternalType type) {
 	m_vars[name] = new Generic{nullptr, type};
 }
 

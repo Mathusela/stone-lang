@@ -3,13 +3,11 @@
 #include "headers/parser.hpp"
 
 // TODO: Destroy scopes when they exit
-// TODO: Allow for different types in binary operators
+// TODO: Add errors
+// TODO: Comment code
 
 int main() {
-	stone_lang::test_func();
-	// std::string fileText = read_file("../../test-code/test.st");
-	// fileText = initial_format_code(fileText);
-	// std::cout << fileText;
+	stone_lang::exec_program("../../test-code/simple.st");
 
 	return 0;
 }

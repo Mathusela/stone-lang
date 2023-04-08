@@ -12,9 +12,6 @@
 
 namespace stone_lang {
 
-using Generic = TokenReturn;
-using GenericType = TokenReturnType;
-
 class Scope {
 private:
 	std::string m_text;
@@ -38,7 +35,7 @@ public:
 	std::string get_text();
 	std::vector<Expression*> get_subexpressions();
 	Generic* get_var(std::string name);
-	void Scope::initialize_var(std::string name, GenericType type);
+	void Scope::initialize_var(std::string name, InternalType type);
 };
 
 } // namespace stone_lang

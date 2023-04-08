@@ -29,7 +29,7 @@ public:
 		for (auto token : m_tokens) delete token;
 	}
 
-	TokenReturn eval();
+	Generic eval();
 
 	std::string get_text();
 	std::vector<Expression*> get_subexpressions();

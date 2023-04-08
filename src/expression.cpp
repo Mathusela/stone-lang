@@ -64,7 +64,6 @@ std::string bracket_binary_operators(std::string inputText, std::string operator
 
 void Expression::init() {
 	m_text = bracket_binary_operators(m_text, "*\\/+\\-");
-	// std::cout << ":::" << bracket_binary_operators(m_text, "*\\/+\\-") << "\n";
 	auto subexpressions = get_subexpressions_text(m_text);
 	m_text = tokenize_subexpressions(m_text);
 	m_text = compress_spaces(m_text);
@@ -84,18 +83,9 @@ void Expression::init() {
 	}
 
 	std::sort(m_tokens.begin(), m_tokens.end(), [](Token* a, Token* b){return a->get_token_type() < b->get_token_type();});
-	// for (auto token : m_tokens) std::cout << token->get_text() << "\n";
-
-	// std::cout << ">> \"" << m_text << "\"\n";
-	// for (auto token : m_tokens) {
-	// 	std::cout << ":: \"" << token.get_text() << "\" ";
-		// token.eval();
-		// std::cout << "\n";
-	// }
 }
 
-TokenReturn Expression::eval() {
-	// for(auto token : m_tokens) token->eval();
+Generic Expression::eval() {
 	return m_tokens[0]->eval();
 }
 

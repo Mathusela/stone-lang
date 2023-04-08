@@ -119,7 +119,7 @@ std::string initial_format_code(std::string inputText) {
 	return escape_reserved_chars(remove_newlines(remove_comments(remove_whitespace(inputText))));
 }
 
-std::vector<std::string> get_expressions(std::string inputText) {
+std::vector<std::string> get_expressions_from_text(std::string inputText) {
 	std::vector<std::string> out;
 
 	std::string expression = "";
@@ -134,17 +134,12 @@ std::vector<std::string> get_expressions(std::string inputText) {
 	return out;
 }
 
-// Make new parse_text function, make this function create_program
-void parse_text(std::string inputText) {
-	auto formattedText = initial_format_code(inputText);
+void exec_program(std::string filePath) {
+	std::string fileText = read_file(filePath);
+	auto formattedText = initial_format_code(fileText);
 
 	Scope global(formattedText);
 	global.eval();
-}
-
-void test_func() {
-	std::string fileText = read_file("../../test-code/simple.st");
-	parse_text(fileText);
 }
 
 } // namespace stone_lang
