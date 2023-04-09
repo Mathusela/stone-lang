@@ -35,6 +35,18 @@ template <> struct type_to_enum_<t_none> {static constexpr InternalType val = NO
 template <> struct type_to_enum_<t_string> {static constexpr InternalType val = STRING;};
 template <> struct type_to_enum_<t_SCOPE_PTR> {static constexpr InternalType val = _SCOPE_PTR;};
 
+std::string internal_type_to_string(InternalType t) {
+	switch (t) {
+		case BOOL: return "bool";
+		case FLOAT: return "float";
+		case INT: return "int";
+		case NONE: return "none";
+		case STRING: return "string";
+		case _SCOPE_PTR: return "scope";
+		default: return "INVALID TYPE";
+	}
+}
+
 // ====== TYPE EVAL ======
 Generic type_eval(Token* token) {
 	std::cout << "TYPE :" << token->get_text() << ";\n";
@@ -47,7 +59,7 @@ Generic type_eval(Token* token) {
 	else if (str == "bool") type = BOOL;
 	else if (str == "string") type = STRING;
 	else if (str == "none") type = NONE;
-	else type = NONE; 
+	else throw std::runtime_error("Invalid type");
 
 	return Generic {nullptr, type};
 }
@@ -63,7 +75,6 @@ Generic printVal(Generic* var) {
 // --------------
 
 Generic name_eval(Token* token) {
-
 	auto prevToken = token->get_prev_token();
 	if (prevToken != nullptr && prevToken->get_token_type() == TYPE) {
 		token->get_expression()->get_scope()->initialize_var(token->get_text(), prevToken->eval().type);
@@ -179,7 +190,6 @@ typename std::enable_if<(bool)HasCast_<ValType, VarType>(), Generic>::type assig
 }
 template <typename VarType, typename ValType>
 typename std::enable_if<!(bool)HasCast_<ValType, VarType>(), Generic>::type assign(Generic* var, void* val) {
-	std::cout << "TYPE ERROR" << "\n";
 	return Generic{};
 }
 // ------------------------
@@ -195,24 +205,29 @@ Generic operator_eval(Token* token) {
 	if (tokenText == "=") {
 		auto var = prevToken->get_expression()->get_scope()->get_var(prevToken->get_text());
 		if (var->val != nullptr) delete var->val;
-		CALL_DOUBLE_TEMPLATED_FUNCTION_ON_TOKEN_TYPES(prevEval.type, nextEval.type, assign, _, var, nextEval.val);
+		CALL_DOUBLE_TEMPLATED_FUNCTION_ON_TOKEN_TYPES(prevEval.type, nextEval.type, assign, ret, var, nextEval.val);
+		if (ret == Generic{}) throw std::runtime_error("ERROR in scope \"" + prevToken->get_expression()->get_scope()->get_name() + "\": Invalid operator \"=\" with left hand \"" + internal_type_to_string(prevEval.type) + "\" and right hand \"" + internal_type_to_string(nextEval.type) + "\"");
 		return Generic {var->val, var->type};
 	} else if (tokenText == "+") {
-		CALL_DOUBLE_TEMPLATED_FUNCTION_ON_TOKEN_TYPES(prevEval.type, nextEval.type, add, val, prevEval, nextEval);
-		token->set_literal_val_ptr(val.val);
-		return val;
+		CALL_DOUBLE_TEMPLATED_FUNCTION_ON_TOKEN_TYPES(prevEval.type, nextEval.type, add, ret, prevEval, nextEval);
+		token->set_literal_val_ptr(ret.val);
+		if (ret == Generic{}) throw std::runtime_error("ERROR in scope \"" + prevToken->get_expression()->get_scope()->get_name() + "\": Invalid operator \"+\" with left hand \"" + internal_type_to_string(prevEval.type) + "\" and right hand \"" + internal_type_to_string(nextEval.type) + "\"");
+		return ret;
 	} else if (tokenText == "-") {
-		CALL_DOUBLE_TEMPLATED_FUNCTION_ON_TOKEN_TYPES(prevEval.type, nextEval.type, sub, val, prevEval, nextEval);
-		token->set_literal_val_ptr(val.val);
-		return val;
+		CALL_DOUBLE_TEMPLATED_FUNCTION_ON_TOKEN_TYPES(prevEval.type, nextEval.type, sub, ret, prevEval, nextEval);
+		token->set_literal_val_ptr(ret.val);
+		if (ret == Generic{}) throw std::runtime_error("ERROR in scope \"" + prevToken->get_expression()->get_scope()->get_name() + "\": Invalid operator \"-\" with left hand \"" + internal_type_to_string(prevEval.type) + "\" and right hand \"" + internal_type_to_string(nextEval.type) + "\"");
+		return ret;
 	} else if (tokenText == "*") {
-		CALL_DOUBLE_TEMPLATED_FUNCTION_ON_TOKEN_TYPES(prevEval.type, nextEval.type, mul, val, prevEval, nextEval);
-		token->set_literal_val_ptr(val.val);
-		return val;
+		CALL_DOUBLE_TEMPLATED_FUNCTION_ON_TOKEN_TYPES(prevEval.type, nextEval.type, mul, ret, prevEval, nextEval);
+		token->set_literal_val_ptr(ret.val);
+		if (ret == Generic{}) throw std::runtime_error("ERROR in scope \"" + prevToken->get_expression()->get_scope()->get_name() + "\": Invalid operator \"*\" with left hand \"" + internal_type_to_string(prevEval.type) + "\" and right hand \"" + internal_type_to_string(nextEval.type) + "\"");
+		return ret;
 	} else if (tokenText == "/") {
-		CALL_DOUBLE_TEMPLATED_FUNCTION_ON_TOKEN_TYPES(prevEval.type, nextEval.type, div, val, prevEval, nextEval);
-		token->set_literal_val_ptr(val.val);
-		return val;
+		CALL_DOUBLE_TEMPLATED_FUNCTION_ON_TOKEN_TYPES(prevEval.type, nextEval.type, div, ret, prevEval, nextEval);
+		token->set_literal_val_ptr(ret.val);
+		if (ret == Generic{}) throw std::runtime_error("ERROR in scope \"" + prevToken->get_expression()->get_scope()->get_name() + "\": Invalid operator \"/\" with left hand \"" + internal_type_to_string(prevEval.type) + "\" and right hand \"" + internal_type_to_string(nextEval.type) + "\"");
+		return ret;
 	} else {
 		return Generic {};
 	}

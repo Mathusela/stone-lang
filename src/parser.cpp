@@ -138,7 +138,7 @@ void exec_program(std::string filePath) {
 	std::string fileText = read_file(filePath);
 	auto formattedText = initial_format_code(fileText);
 
-	Scope global(formattedText);
+	Scope global(formattedText, "global");
 	global.eval();
 }
 

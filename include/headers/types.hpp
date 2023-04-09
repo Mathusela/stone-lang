@@ -35,8 +35,11 @@ using t_SCOPE_PTR = Scope*;
 struct Generic {
 	void* val = nullptr;
 	InternalType type = NONE; 
-};
 
+	bool operator== (Generic x) {
+		return type == x.type && val == x.val;
+	}
+};
 } // namespace stone_lang
 
 #endif

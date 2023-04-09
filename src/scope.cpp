@@ -24,7 +24,7 @@ void Scope::init() {
 
 	auto subscopes = get_scopes(m_text);
 	m_text = tokenize_scopes(m_text);
-	for (auto subscope : subscopes) m_subscopes.push_back(new Scope(subscope));
+	for (auto subscope : subscopes) m_subscopes.push_back(new Scope(subscope, "%NAME%"));
 	
 	auto expressionsText = get_expressions_from_text(m_text);
 	for (auto expression : expressionsText) m_expressions.push_back(new Expression(expression, this));
@@ -32,6 +32,10 @@ void Scope::init() {
 
 void Scope::eval() {
 	for (auto expression : m_expressions) expression->eval();
+}
+
+std::string Scope::get_name() {
+	return m_name;
 }
 
 std::string Scope::get_text() {
@@ -45,7 +49,7 @@ std::vector<Expression*> Scope::get_subexpressions() {
 Generic* Scope::get_var(std::string name) {
 	if (m_vars.find(name) != m_vars.end()) return m_vars[name];
 	else {
-		std::cout << "Uninitialized variable \"" << name << "\"\n";
+		throw std::runtime_error("ERROR in scope \"" + m_name + "\": Uninitialized variable \"" + name + "\"");
 		return nullptr;
 	}
 }

@@ -14,6 +14,7 @@ namespace stone_lang {
 
 class Scope {
 private:
+	std::string m_name;
 	std::string m_text;
 	std::vector<Expression*> m_expressions {};
 	std::vector<Scope*> m_subscopes {};
@@ -22,7 +23,7 @@ private:
 	void init();
 
 public:
-	Scope(std::string text): m_text(text) {init();}
+	Scope(std::string text, std::string name): m_text(text), m_name(name) {init();}
 	~Scope() {
 		for (auto var : m_vars) {delete var.second->val;}
 		for (auto var : m_vars) {delete var.second;}
@@ -32,6 +33,7 @@ public:
 
 	void eval();
 
+	std::string get_name();
 	std::string get_text();
 	std::vector<Expression*> get_subexpressions();
 	Generic* get_var(std::string name);

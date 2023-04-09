@@ -1,2 +1,2 @@
-float test = 5.5 * 5;
+string test = "test" * 5;
 test;
