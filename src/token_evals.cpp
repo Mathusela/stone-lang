@@ -186,7 +186,8 @@ typename std::enable_if<!(bool)HasDiv_<T1, T2>(), Generic>::type div(Generic pre
 template <typename VarType, typename ValType>
 typename std::enable_if<(bool)HasCast_<ValType, VarType>(), Generic>::type assign(Generic* var, void* val) {
 	if (val != nullptr) var->val = (void*)new VarType((VarType)*(ValType*)val);
-	return Generic{};
+	// Placeholder type INT to prevent error from triggering
+	return Generic{nullptr, INT};
 }
 template <typename VarType, typename ValType>
 typename std::enable_if<!(bool)HasCast_<ValType, VarType>(), Generic>::type assign(Generic* var, void* val) {

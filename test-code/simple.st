@@ -1,2 +1,2 @@
-string test = "test" * 5;
+string test = "Hello" + " world"!;
 test;
